@@ -7,7 +7,7 @@ on:
       - "v*.*.*"
 
 jobs:
-  build-and-deploy:
+build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -24,15 +24,13 @@ jobs:
 
     - name: Zip plugin
       run: |
-        PLUGIN_DIR=$(basename ${{ github.repository }})
-        mkdir -p ./dist $PLUGIN_DIR
-
-        # Copy all plugin files into the named folder
-        rsync -av --exclude='.git*' --exclude='.github' --exclude='tests' ./ ./$PLUGIN_DIR/
-
-        # Create the ZIP with the top-level plugin folder
-        cd ./
-        zip -r "./dist/${PLUGIN_DIR}.zip" "$PLUGIN_DIR"
+        PLUGIN_DIR="gtm-casino-card"
+        mkdir -p ./dist
+        mkdir -p "./temp/${PLUGIN_DIR}"
+        shopt -s extglob
+        cp -r !(dist|.git|.github|tests|temp) "./temp/${PLUGIN_DIR}/"
+        cd temp
+        zip -r "../dist/${PLUGIN_DIR}.zip" "${PLUGIN_DIR}"
 
     - name: Upload Release Asset
       uses: softprops/action-gh-release@v1
@@ -40,3 +38,13 @@ jobs:
         files: ./dist/*.zip
       env:
         GITHUB_TOKEN: ${{ secrets.PUBLIC_RELEASE_TOKEN }}
+
+    - name: Send ZIP to Telegram
+    env:
+        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+    run: |
+        curl -F "chat_id=${TELEGRAM_CHAT_ID}" \
+            -F "document=@dist/gtm-casino-card.zip" \
+            https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendDocument
+
