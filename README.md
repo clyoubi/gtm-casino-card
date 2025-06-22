@@ -3,9 +3,9 @@ This plugin provides a custom shortcode that displays detailed information about
 Each casino card is dynamically rendered with a shortcode based on a unique identifier, making it easy for content editors to insert specific casino profiles anywhere across the site.</br>
 The plugin is designed for flexibility, seamless integration, and ease of use within the WordPress block editor or classic editor.
 
-## Installation
+## 🚀 Installation
 
-### 🚀 Step-by-Step Instructions
+### Step-by-Step Instructions
 
 #### 1. Log into WordPress Admin
 Go to `https://yourdomain.com/wp-admin` and log in with your credentials. (if your website has a different admin panel slug to login, please contact your super administrator)
@@ -36,7 +36,7 @@ Once the plugin has been successfully installed, click **“Activate Plugin”**
 
 ---
 
-## Configuration
+## ⚙ Configuration
 The settings configuation can be found in the casino setting's page, the page is only available for administrators. Here is a detailled table of the core functionnalities.
 
 <table class="table">
@@ -160,18 +160,25 @@ When the API credentials are set, you can test the connection to ensure they are
 Casino Card -> Settings -> Test Connection
 
 
-### Cache
+### 🧠 Cache
+To optimize performance and reduce redundant API requests, the plugin supports caching via WordPress Transients.
 
-## Customization
-### Custom currencies
-### Card header
-#### Logo
-#### Background Color
-#### CTA Background Color
+* **Enable Cache:** You can enable or disable the cache from the plugin settings (Enable Cache checkbox).
+* **Cache Duration:** Set the duration (in hours) for which API responses should be cached. After expiration, fresh data will be fetched.
+* **Manual Clear:** A button in the settings page allows you to manually clear the cache if needed.
+* **Automated Clearing:** The plugin uses WordPress Cron to automatically clear cached data based on the duration you set.
 
-## Impact Analysis
+#### Custom Currencies
+You can define which currency symbol should be used when displaying monetary values.
 
-### Performance
+* Available Options: EUR (€), USD ($) by default.
+* Setting Location: Under General Settings, use the Currency For Bonus dropdown.
+* Extendability: Developers can extend supported currencies by modifying the Casino::$currencies `public static $currencies = ['EUR' => '€', 'USD' => '$'];` variable in Casino class.
+
+
+## ⚡️ Impact Analysis
+
+### ✅ Performance
 Remote API Fetching: When the `[casino_card]` shortcode is rendered without caching, it triggers a real-time API request to an external server. This:
 * Adds latency depending on the response time of the third-party API.
 * Can delay server-side rendering of the page.
@@ -196,7 +203,7 @@ Minimal impact on CPU and memory due to use of native PHP functions and WordPres
 * Ensure API caching is enabled `(casino_general_enable_cache = yes)` in high-traffic environments.
 * Avoid overusing shortcodes in high-density areas (e.g., listing dozens of casinos on a single page).
 
-### Plugin Conflict
+### ⚠️ Plugin Conflict
 #### Shortcode Naming
 * The plugin registers the  `[casino_card]` shortcode and verifies its availability before registration.
 * If another plugin or theme has already registered the shortcode, this plugin:
@@ -211,7 +218,7 @@ Minimal impact on CPU and memory due to use of native PHP functions and WordPres
 * Avoid installing other plugins that use the same  `[casino_card]` shortcode or access the same API endpoint namespace.
 * Perform QA testing when new plugins are added, especially those involving custom shortcodes or external API calls.
 
-### Security
+### 🔒 Security
 #### API Authentication
 * Uses HTTP Basic Auth for communication with the external casino data API.
 * Credentials (username, password) are stored securely using WordPress options API and not exposed in the frontend.
