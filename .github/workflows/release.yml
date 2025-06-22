@@ -28,7 +28,7 @@ jobs:
           mkdir -p ./dist
           mkdir -p "./temp/${PLUGIN_DIR}"
           shopt -s extglob
-          cp -r !(dist|.git|.github|tests|temp|README) "./temp/${PLUGIN_DIR}/"
+          cp -r !(dist|.git|.github|tests|temp|README|README.md) "./temp/${PLUGIN_DIR}/"
           cd temp
           zip -r "../dist/${PLUGIN_DIR}.zip" "${PLUGIN_DIR}"
 
