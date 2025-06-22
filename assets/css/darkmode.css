@@ -1,0 +1,11 @@
+@media (prefers-color-scheme: dark) {
+  #gtm-casino-cards-block .card {
+    background-color: #3b3b3b;
+    color: white;
+  }
+
+  #gtm-casino-cards-block .card .content .item .icon svg path{
+    fill: white;
+  }
+
+}

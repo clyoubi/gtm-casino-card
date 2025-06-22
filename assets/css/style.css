@@ -1,0 +1,144 @@
+#gtm-casino-cards-block {
+  display: flex;
+  margin: 24px 0px;
+  flex-wrap: wrap;
+  --gap: 16px;
+  --columns: 2;
+  gap: var(--gap);
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+#gtm-casino-cards-block .card {
+  border-radius: 8px;
+  padding: 23px; /*!!IMPORTANT: We had to reduce the inner padding by 1 unit so the design match and the flex effect too*/
+  min-width: 334px;
+  background-color: white;
+  box-sizing: border-box;
+  font-family: "Lato", sans-serif;
+  font-weight: 400;
+  width: calc(
+    (100% / var(--columns)) - var(--gap) + (var(--gap) / var(--columns))
+  );
+  border: 1px solid #ccc; /*!!IMPORTANT: We set a border color by defaut to constrast with white backgrounds*/
+}
+
+#gtm-casino-cards-block .card .logo {
+  height: 165px;
+  width: auto;
+  background-color: black;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 16px;
+}
+
+#gtm-casino-cards-block .card .logo img{
+  width: 100px;
+  height: 100px;
+  max-height: 120px; /** important: To make sure the logo image does not overlap the container if bigger images are sent from the API*/
+}
+
+#gtm-casino-cards-block .card .logo .brandName {
+  color: white;
+  font-size: 22px;
+  font-weight: 700;
+  margin: auto 10px;
+  word-wrap: break-word;
+  max-width: 50%;
+}
+
+#gtm-casino-cards-block .card .content {
+  display: flex;
+  margin: 24px 0px;
+  flex-wrap: wrap;
+  --gap: 16px;
+  --columns: 2;
+  column-gap: var(--gap);
+  row-gap: 12px;
+}
+
+#gtm-casino-cards-block .card .content .item {
+  width: calc(
+    (100% / var(--columns)) - var(--gap) + (var(--gap) / var(--columns))
+  );
+  display: flex;
+}
+
+#gtm-casino-cards-block .card .content .item .icon {
+  display: inline-block;
+  margin-top: 0px;
+  margin-right: 4px;
+  width: 15px;
+}
+
+#gtm-casino-cards-block .card .content .item .title {
+  font-size: 12px;
+}
+
+#gtm-casino-cards-block .card .content .item .amount {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+#gtm-casino-cards-block .card .content .item span {
+  display: block;
+}
+
+#gtm-casino-cards-block .card .cta {
+  font-size: 18px;
+  font-weight: 700;
+  text-decoration: none;
+  text-align: center;
+  background-color: #287e29;
+  padding: 10px 25px;
+  color: white;
+  border-radius: 10px;
+  border: 0;
+  display: block;
+  transition: all .2s ease-in-out;
+}
+
+#gtm-casino-cards-block .card .cta:hover {
+  transform: scale(1.05);
+}
+
+#gtm-casino-cards-block .d-flex {
+  display: flex;
+}
+
+@media screen and (max-width: 768px) {
+  #gtm-casino-cards-block .card {
+    width: 334px;
+  }
+}
+
+@media screen and (max-width: 375px) {
+
+}
+
+@media screen and (max-width: 320px) {
+  #gtm-casino-cards-block .card {
+    padding: 15px;
+    width: 320px;
+    min-width: unset;
+  }
+
+  #gtm-casino-cards-block .card .content .item {
+    width: 100%;
+  }
+
+  #gtm-casino-cards-block .card .content .item .icon {
+    margin-top: 5px;
+  }
+
+  #gtm-casino-cards-block .card .content .item .bonus {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+  }
+}
