@@ -7,44 +7,60 @@ on:
       - "v*.*.*"
 
 jobs:
-build-and-deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Set up PHP
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: '8.2'
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
 
-    - name: Validate PHP syntax
-      run: find . -name "*.php" -exec php -l {} \;
+      - name: Validate PHP syntax
+        run: find . -name "*.php" -exec php -l {} \;
 
-    - name: Zip plugin
-      run: |
-        PLUGIN_DIR="gtm-casino-card"
-        mkdir -p ./dist
-        mkdir -p "./temp/${PLUGIN_DIR}"
-        shopt -s extglob
-        cp -r !(dist|.git|.github|tests|temp) "./temp/${PLUGIN_DIR}/"
-        cd temp
-        zip -r "../dist/${PLUGIN_DIR}.zip" "${PLUGIN_DIR}"
+      - name: Zip plugin
+        run: |
+          PLUGIN_DIR="gtm-casino-card"
+          mkdir -p ./dist
+          mkdir -p "./temp/${PLUGIN_DIR}"
+          shopt -s extglob
+          cp -r !(dist|.git|.github|tests|temp) "./temp/${PLUGIN_DIR}/"
+          cd temp
+          zip -r "../dist/${PLUGIN_DIR}.zip" "${PLUGIN_DIR}"
 
-    - name: Upload Release Asset
-      uses: softprops/action-gh-release@v1
-      with:
-        files: ./dist/*.zip
-      env:
-        GITHUB_TOKEN: ${{ secrets.PUBLIC_RELEASE_TOKEN }}
+      - name: Upload Release Asset
+        uses: softprops/action-gh-release@v1
+        with:
+          files: ./dist/*.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.PUBLIC_RELEASE_TOKEN }}
 
-    - name: Send ZIP to Telegram
-    env:
-        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-        TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-    run: |
-        curl -F "chat_id=${TELEGRAM_CHAT_ID}" \
-            -F "document=@dist/gtm-casino-card.zip" \
-            https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendDocument
+      - name: Upload ZIP artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: plugin-zip
+          path: ./dist/gtm-casino-card.zip
 
+  send-to-telegram:
+    needs: build-and-deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download ZIP artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: plugin-zip
+          path: ./dist
+
+      - name: Send ZIP to Telegram
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          curl -F "chat_id=${TELEGRAM_CHAT_ID}" \
+               -F "document=@./dist/gtm-casino-card.zip" \
+               https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendDocument
