@@ -76,6 +76,15 @@ class GTMCasinoCardShortCode
         $use_cache = get_option('casino_general_enable_cache') === 'yes';
         $cache_duration = (int) get_option('casino_cache_delay', 1) * HOUR_IN_SECONDS;
 
+        // Build request
+        $url = GTM_REST_API_ENDPOINT . "/casinos/$ID";
+        $username = GTMAdmin::getAPICredentials('username');
+        $password = GTMAdmin::getAPICredentials('password');
+
+        if (empty($username) || empty($password)) {
+            return 'API not configured.';
+        }
+
 
         if ($ID === '' && get_option("casino_general_fetch_all_casinos") !== 'yes') {
             return 'Casino ID not set';
@@ -88,15 +97,6 @@ class GTMCasinoCardShortCode
                 [],
                 '1.0.0'
             );
-        }
-
-        // Build request
-        $url = GTM_REST_API_ENDPOINT . "/casinos/$ID";
-        $username = GTMAdmin::getAPICredentials('username');
-        $password = GTMAdmin::getAPICredentials('password');
-
-        if (empty($username) || empty($password)) {
-            return 'API not configured.';
         }
 
         // Try to load from cache if enabled
