@@ -240,3 +240,46 @@ Minimal impact on CPU and memory due to use of native PHP functions and WordPres
 * Only users with manage_options capability (typically Admins) can change settings or view sensitive config.
 * Shortcode execution does not expose internal settings or secrets.
 
+---
+
+## 🚀 Deployment Documentation
+
+This WordPress plugin uses GitHub Actions to automate the build and release process, including distribution to Telegram.
+
+---
+
+### 🔧 GitHub Actions CD/CI Pipeline
+
+#### Overview
+
+The GitHub Actions pipeline performs the following:
+
+1. Validates PHP syntax.
+2. Packages the plugin into a `.zip` file with proper folder structure.
+3. Creates a GitHub release with the `.zip` as an asset.
+4. Sends the release file to a specified Telegram channel. (You can adjust with notification system you want Slack, Teams, Mail...)
+
+---
+
+### 🔐 Required GitHub Secrets
+
+Create these secrets in your repository under **Settings → Secrets → Actions**:
+
+| Secret Name              | Description                                                                 |
+|--------------------------|-----------------------------------------------------------------------------|
+| `PUBLIC_RELEASE_TOKEN`   | GitHub Personal Access Token with `repo` permission (classic token).        |
+| `TELEGRAM_BOT_TOKEN`     | Telegram bot token obtained via [@BotFather](https://t.me/BotFather).       |
+| `TELEGRAM_CHAT_ID`       | Telegram channel or group chat ID (e.g., `@channelname` or `-100xxxxxxxxx`).|
+
+---
+
+### 🏷️ Tag-Based Release Trigger
+
+The pipeline is triggered **when a tag is pushed** that matches the `v*.*.*` pattern.
+
+#### Example Tag Command
+
+```bash
+git tag v1.0.0
+git push origin v1.0.0
+```

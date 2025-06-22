@@ -28,7 +28,7 @@ jobs:
           mkdir -p ./dist
           mkdir -p "./temp/${PLUGIN_DIR}"
           shopt -s extglob
-          cp -r !(dist|.git|.github|tests|temp) "./temp/${PLUGIN_DIR}/"
+          cp -r !(dist|.git|.github|tests|temp|README) "./temp/${PLUGIN_DIR}/"
           cd temp
           zip -r "../dist/${PLUGIN_DIR}.zip" "${PLUGIN_DIR}"
 
@@ -60,7 +60,15 @@ jobs:
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_REF_NAME: ${{ github.ref_name }}
         run: |
-          curl -F "chat_id=${TELEGRAM_CHAT_ID}" \
-               -F "document=@./dist/gtm-casino-card.zip" \
-               https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendDocument
+            ZIP_URL="https://github.com/${GITHUB_REPOSITORY}/releases/download/${GITHUB_REF_NAME}/gtm-casino-card.zip"
+            RELEASE_NOTES=$(gh release view "${GITHUB_REF_NAME}" --json body -q ".body")
+
+            MESSAGE="📦 *New Plugin Release: ${GITHUB_REF_NAME}*\n\n[Download ZIP](${ZIP_URL})\n\n📝 *Release Notes:*\n${RELEASE_NOTES}"
+
+            curl -s -X POST https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage \
+            -d chat_id="${TELEGRAM_CHAT_ID}" \
+            -d parse_mode=Markdown \
+            --data-urlencode text="$MESSAGE"
