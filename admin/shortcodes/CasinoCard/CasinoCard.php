@@ -90,6 +90,15 @@ class GTMCasinoCardShortCode
             );
         }
 
+        // Build request
+        $url = GTM_REST_API_ENDPOINT . "/casinos/$ID";
+        $username = GTMAdmin::getAPICredentials('username');
+        $password = GTMAdmin::getAPICredentials('password');
+
+        if (empty($username) || empty($password)) {
+            return 'API not configured.';
+        }
+
         // Try to load from cache if enabled
         if ($use_cache) {
             $cached = get_transient($cache_key);
@@ -104,15 +113,6 @@ class GTMCasinoCardShortCode
                 include GTM_PLUGIN_DIR . 'templates/CasinoCard.php';
                 return ob_get_clean();
             }
-        }
-
-        // Build request
-        $url = GTM_REST_API_ENDPOINT . "/casinos/$ID";
-        $username = GTMAdmin::getAPICredentials('username');
-        $password = GTMAdmin::getAPICredentials('password');
-
-        if (empty($username) || empty($password)) {
-            return 'API not configured.';
         }
 
         $args = [
