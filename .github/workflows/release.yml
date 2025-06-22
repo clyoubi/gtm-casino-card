@@ -64,12 +64,7 @@ jobs:
           GITHUB_REF_NAME: ${{ github.ref_name }}
           GH_TOKEN: ${{ secrets.PUBLIC_RELEASE_TOKEN }}
         run: |
-            ZIP_URL="https://github.com/${GITHUB_REPOSITORY}/releases/download/${GITHUB_REF_NAME}/gtm-casino-card.zip"
-            RELEASE_NOTES=$(gh release view "${GITHUB_REF_NAME}" --json body -q ".body")
+            curl -F "chat_id=${TELEGRAM_CHAT_ID}" \
+            -F "document=@dist/gtm-casino-card.zip" \
+            https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendDocument
 
-            MESSAGE="📦 *New Plugin Release: ${GITHUB_REF_NAME}*\n\n[Download ZIP](${ZIP_URL})\n\n📝 *Release Notes:*\n${RELEASE_NOTES}"
-
-            curl -s -X POST https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage \
-            -d chat_id="${TELEGRAM_CHAT_ID}" \
-            -d parse_mode=Markdown \
-            --data-urlencode text="$MESSAGE"
