@@ -62,7 +62,6 @@ jobs:
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           GITHUB_REF_NAME: ${{ github.ref_name }}
-          GH_TOKEN: ${{ secrets.PUBLIC_RELEASE_TOKEN }}
         run: |
             ZIP_URL="https://github.com/${GITHUB_REPOSITORY}/releases/download/${GITHUB_REF_NAME}/gtm-casino-card.zip"
             
