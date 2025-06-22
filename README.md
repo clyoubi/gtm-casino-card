@@ -101,6 +101,7 @@ The settings configuation can be found in the casino setting's page, the page is
 </tbody>
 </table>
 
+---
 
 ## Usage
 the plugin can be used by anyone accessing the admin panel, users with edit_posts capabilities can access to the documentation page and users with administrator capability can access and edit settings.
@@ -155,10 +156,11 @@ the plugin can be used by anyone accessing the admin panel, users with edit_post
 </tbody>
 </table>
 
+---
+
 ### Test connection
 When the API credentials are set, you can test the connection to ensure they are correct.
 Casino Card -> Settings -> Test Connection
-
 
 ### 🧠 Cache
 To optimize performance and reduce redundant API requests, the plugin supports caching via WordPress Transients.
@@ -175,6 +177,8 @@ You can define which currency symbol should be used when displaying monetary val
 * Setting Location: Under General Settings, use the Currency For Bonus dropdown.
 * Extendability: Developers can extend supported currencies by modifying the Casino::$currencies `public static $currencies = ['EUR' => '€', 'USD' => '$'];` variable in Casino class.
 
+
+---
 
 ## ⚡️ Impact Analysis
 

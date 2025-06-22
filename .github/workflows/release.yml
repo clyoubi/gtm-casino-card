@@ -33,4 +33,4 @@ jobs:
       with:
         files: ./dist/*.zip
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.PUBLIC_RELEASE_TOKEN }}
