@@ -26,7 +26,7 @@ jobs:
       run: |
         PLUGIN_DIR=$(basename ${{ github.repository }})
         mkdir -p ./dist
-        zip -r "./dist/${PLUGIN_DIR}.zip" . -x ".git/*" ".github/*" "tests/*" ".git*"
+        zip -r "./dist/${PLUGIN_DIR}/${PLUGIN_DIR}.zip" . -x ".git/*" ".github/*" "tests/*" ".git*"
 
     - name: Upload Release Asset
       uses: softprops/action-gh-release@v1
