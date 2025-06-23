@@ -3,7 +3,7 @@
 /**
  * Plugin Name: Casino Card GTM
  * Description: This plugin provides a custom shortcode that displays detailed information about a casino in a predefined, visually styled card format.
- * Version: 1.1.0
+ * Version: 1.1.1
  * Author: Cedric Liam Youbi
  * Author URI: https://github.com/clyoubi
  * Text Domain: gtm-casino-card
@@ -27,6 +27,9 @@ require_once GTM_PLUGIN_DIR . 'admin/includes/models/setting.php';
 require_once GTM_PLUGIN_DIR . 'admin/shortcodes/CasinoCard/CasinoCard.php';
 require_once GTM_PLUGIN_DIR . 'admin/admin.php';
 require_once GTM_PLUGIN_DIR . 'admin/CacheHandler.php';
+require_once GTM_PLUGIN_DIR . 'plugin-update-checker/plugin-update-checker.php';
+
+use YahnisElsts\PluginUpdateChecker\v5\PucFactory;
 
 class GTMCasinoCard
 {
@@ -40,3 +43,12 @@ class GTMCasinoCard
 
 
 new GTMCasinoCard();
+
+
+$myUpdateChecker = PucFactory::buildUpdateChecker(
+    'https://github.com/clyoubi/gtm-casino-card/',
+    __FILE__,
+    'gtm-casino-card'
+);
+
+$myUpdateChecker->getVcsApi()->enableReleaseAssets();
