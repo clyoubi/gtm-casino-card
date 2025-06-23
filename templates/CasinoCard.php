@@ -11,7 +11,7 @@
     <?php foreach ($casinos as $casino): ?>
         <div class="card" id="<?php echo $casino->id; ?>">
             <div class="logo" style="background-color:<?php echo $BG_COLOR; ?>">
-                <img width="100" height="100" loading="lazy" src="<?php echo $casino->logo_url; ?>" alt="<?php echo $casino->name; ?>">
+                <img height="100" loading="lazy" src="<?php echo $casino->logo_url; ?>" alt="<?php echo $casino->name; ?>">
                 <?php if ($DISPLAY_BRAND_NAME === 'yes') : ?>
                     <h3 class="brandName"><?php echo $casino->name; ?></h3>
                 <?php endif; ?>

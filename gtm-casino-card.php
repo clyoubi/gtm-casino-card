@@ -10,7 +10,7 @@
  * Domain Path: /languages
  * Requires at least: 6.1
  * Requires PHP: 8.2
- * Update URI: https://github.com/clyoubi/gtm-plugin
+ * Update URI: https://github.com/clyoubi/gtm-casino-card
  */
 
 

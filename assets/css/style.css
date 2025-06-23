@@ -24,6 +24,7 @@
 }
 
 #gtm-casino-cards-block .card .logo {
+  /*!!IMPORTANT: I was not sure about the final logo images size provided by the API that's why I havent set the image width **/
   height: 165px;
   width: auto;
   background-color: black;
@@ -35,7 +36,6 @@
 }
 
 #gtm-casino-cards-block .card .logo img{
-  width: 100px;
   height: 100px;
   max-height: 120px; /** important: To make sure the logo image does not overlap the container if bigger images are sent from the API*/
 }
