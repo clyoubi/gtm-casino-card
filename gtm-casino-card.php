@@ -3,7 +3,7 @@
 /**
  * Plugin Name: Casino Card GTM
  * Description: This plugin provides a custom shortcode that displays detailed information about a casino in a predefined, visually styled card format.
- * Version: 1.1.4
+ * Version: 1.1.6
  * Author: Cedric Liam Youbi
  * Author URI: https://github.com/clyoubi
  * Text Domain: gtm-casino-card
@@ -38,17 +38,20 @@ class GTMCasinoCard
         (new GTMAdmin())->init();
         (new GTMCacheHandler())->init();
         (new GTMCasinoCardShortCode())->init();
+        $this->pluginUpdatesHandler();
+    }
+
+    public function pluginUpdatesHandler()
+    {
+        $myUpdateChecker = PucFactory::buildUpdateChecker(
+            'https://github.com/clyoubi/gtm-casino-card/',
+            __FILE__,
+            'gtm-casino-card'
+        );
+
+        $myUpdateChecker->getVcsApi()->enableReleaseAssets();
     }
 }
 
 
 new GTMCasinoCard();
-
-
-$myUpdateChecker = PucFactory::buildUpdateChecker(
-    'https://github.com/clyoubi/gtm-casino-card/',
-    __FILE__,
-    'gtm-casino-card'
-);
-
-$myUpdateChecker->getVcsApi()->enableReleaseAssets();

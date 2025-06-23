@@ -258,7 +258,7 @@ The GitHub Actions pipeline performs the following:
 2. Packages the plugin into a `.zip` file with proper folder structure.
 3. Creates a GitHub release with the `.zip` as an asset.
 4. Sends the release file to a specified Telegram channel. (You can adjust with notification system you want Slack, Teams, Mail...)
-
+5. Automatically populate Updates to the plugin extension so it can be directly update from the admin dashboard on Wordpress
 ---
 
 ### 🔐 Required GitHub Secrets
@@ -276,6 +276,17 @@ Create these secrets in your repository under **Settings → Secrets → Actions
 ### 🏷️ Tag-Based Release Trigger
 
 The pipeline is triggered **when a tag is pushed** that matches the `v*.*.*` pattern.
+
+#### Infos
+* ChangeLog: You can provide a Changelog.md file listing the changes made in the current version
+* version: **You have to update the plugin header version in the gtm-casino-card.php file else the "new update avaiblability" will not be propagated to all the websites.
+```
+ * Version: 1.1.5
+``` 
+* Stable version: if your update fix a critical bug, dont forget to update the stable version tag of the plyugin inside the README.txt
+```
+* Stable tag: v1.1.5
+``` 
 
 #### Example Tag Command
 
