@@ -9,11 +9,11 @@
 ?>
 <div id="gtm-casino-cards-block">
     <?php foreach ($casinos as $casino): ?>
-        <div class="card" id="<?php echo $casino->id; ?>">
-            <div class="logo" style="background-color:<?php echo $BG_COLOR; ?>">
-                <img height="100" loading="lazy" src="<?php echo $casino->logo_url; ?>" alt="<?php echo $casino->name; ?>">
+        <div class="card" id="<?php echo esc_html($casino->id); ?>">
+            <div class="logo" style="background-color:<?php echo esc_html($BG_COLOR); ?>">
+                <img height="100" loading="lazy" src="<?php echo esc_url($casino->logo_url); ?>" alt="<?php echo esc_html($casino->name); ?>">
                 <?php if ($DISPLAY_BRAND_NAME === 'yes') : ?>
-                    <h3 class="brandName"><?php echo $casino->name; ?></h3>
+                    <h3 class="brandName"><?php echo esc_html($casino->name); ?></h3>
                 <?php endif; ?>
             </div>
             <div class="content">
@@ -39,8 +39,8 @@
                         </svg>
                     </span>
                     <div class="bonus">
-                        <span class="title"><?php _e("Average RTP", "gtm-casino-card"); ?></span>
-                        <span class="amount"><?php echo $casino->average_rtp; ?> %</span>
+                        <span class="title"><?php esc_html_e("Average RTP", "gtm-casino-card"); ?></span>
+                        <span class="amount" data-no-translate><?php echo esc_html($casino->average_rtp); ?> %</span>
                     </div>
                 </div>
                 <div class="item">
@@ -52,8 +52,8 @@
                         </svg>
                     </span>
                     <div class="bonus">
-                        <span class="title"><?php _e("Biggest win month", "gtm-casino-card") ?></span>
-                        <span class="amount"><?php Casino::moneyFormat($casino->biggest_win_month); ?></span>
+                        <span class="title"><?php esc_html_e("Biggest win month", "gtm-casino-card") ?></span>
+                        <span class="amount" data-no-translate><?php Casino::moneyFormat($casino->biggest_win_month); ?></span>
                     </div>
                 </div>
                 <div class="item">
@@ -65,8 +65,8 @@
                         </svg>
                     </span>
                     <div class="bonus">
-                        <span class="title"><?php _e("Payment delay", "gtm-casino-card") ?></span>
-                        <span class="amount"><?php echo $casino->payment_delay_hours; ?> <?php _e("hours", "gtm-casino-card") ?></span>
+                        <span class="title"><?php esc_html_e("Payment delay", "gtm-casino-card") ?></span>
+                        <span class="amount" data-no-translate><?php echo esc_html($casino->payment_delay_hours); ?> <?php esc_html_e("hours", "gtm-casino-card") ?></span>
                     </div>
                 </div>
                 <div class="item">
@@ -81,8 +81,8 @@
                         </svg>
                     </span>
                     <div class="bonus">
-                        <span class="title"><?php _e("Monthly Widthdrawal", "gtm-casino-card") ?></span>
-                        <span class="amount"><?php Casino::moneyFormat($casino->monthly_withdrawal_limit); ?></span>
+                        <span class="title"><?php esc_html_e("Monthly Widthdrawal", "gtm-casino-card") ?></span>
+                        <span class="amount" data-no-translate><?php Casino::moneyFormat($casino->monthly_withdrawal_limit); ?></span>
                     </div>
                 </div>
                 <div class="item">
@@ -97,8 +97,8 @@
                         </svg>
                     </span>
                     <div class="bonus">
-                        <span class="title"><?php _e("Validated withdrawals", "gtm-casino-card") ?></span>
-                        <span class="amount"><?php Casino::moneyFormat($casino->validated_withdrawals_value); ?></span>
+                        <span class="title"><?php esc_html_e("Validated withdrawals", "gtm-casino-card") ?></span>
+                        <span class="amount" data-no-translate><?php Casino::moneyFormat($casino->validated_withdrawals_value); ?></span>
                     </div>
                 </div>
                 <div class="item">
@@ -117,13 +117,13 @@
                         </svg>
                     </span>
                     <div class="bonus">
-                        <span class="title"><?php _e("Numbers of monthly withdrawals", "gtm-casino-card") ?></span>
-                        <span class="amount"><?php echo $casino->monthly_withdrawals_number; ?></span>
+                        <span class="title"><?php esc_html_e("Numbers of monthly withdrawals", "gtm-casino-card") ?></span>
+                        <span class="amount" data-no-translate><?php echo esc_html("$casino->monthly_withdrawals_number"); ?></span>
                     </div>
                 </div>
             </div>
-            <a class="cta" role="button" target="_blank" rel="nofollow" style="background-color:<?php echo $CTA_COLOR; ?>" href="<?php echo $casino->go ?>">
-                <?php _e("Play Now", "gtm-casino-card") ?>
+            <a class="cta" role="button" target="_blank" rel="nofollow" style="background-color:<?php echo esc_html($CTA_COLOR); ?>" href="<?php echo esc_url($casino->go); ?>">
+                <?php esc_html_e("Play Now", "gtm-casino-card") ?>
             </a>
         </div>
     <?php endforeach; ?>

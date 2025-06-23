@@ -53,15 +53,28 @@ class GTMAdmin
             $response = wp_remote_get($url, $args);
             $code = wp_remote_retrieve_response_code($response);
             if (is_wp_error($response)) {
-                echo '<div class="notice notice-error is-dismissible"><p>' . _x("An error occured during the verification, double check your Internet connection and try again later", "gtm-casino-card") . '</p></div>';
+                printf(
+                    '<div class="notice notice-error is-dismissible"><p>%s</p></div>',
+                    esc_html_x(
+                        'An error occurred during the verification. Double check your Internet connection and try again later.',
+                        'Error message in admin notice',
+                        'gtm-casino-card'
+                    )
+                );
             } else {
                 if ($code == 200) {
                     return add_action('admin_notices', function () {
-                        echo '<div class="notice notice-success is-dismissible"><p>' . _x("API Keys are correct !", "gtm-casino-card") . '</p></div>';
+                        printf(
+                            '<div class="notice notice-success is-dismissible"><p>%s</p></div>',
+                            esc_html_x('API Keys are correct!', 'Success message after API key validation', 'gtm-casino-card')
+                        );
                     });
                 } else {
                     return add_action('admin_notices', function () {
-                        echo '<div class="notice notice-error is-dismissible"><p>' . _x("Bad Credentials", "gtm-casino-card") . '</p></div>';
+                        printf(
+                            '<div class="notice notice-error is-dismissible"><p>%s</p></div>',
+                            esc_html_x('Bad Credentials', 'Error message for invalid API credentials', 'gtm-casino-card')
+                        );
                     });
                 }
             }
@@ -82,8 +95,8 @@ class GTMAdmin
     public function casino_card_plugin_menu()
     {
         add_menu_page(
-            _x('Casino Card Shortcode Handler', 'gtm-casino-card'),
-            _x('Casino Card', 'gtm-casino-card'),
+            __('Casino Card Shortcode Handler', 'gtm-casino-card'),
+            __('Casino Card', 'gtm-casino-card'),
             'edit_posts',
             'gtm-casino-card',
             [$this, 'gtm_casino_card_page_html'],
@@ -93,8 +106,8 @@ class GTMAdmin
 
         add_submenu_page(
             'gtm-casino-card',
-            _x('Settings page', 'gtm-casino-card'),
-            _x('Settings', 'gtm-casino-card'),
+            __('Settings page', 'gtm-casino-card'),
+            __('Settings', 'gtm-casino-card'),
             'manage_options',
             'casino_card_settings',
             [$this, 'gtm_casino_card_page_settings_page_html']
@@ -141,7 +154,7 @@ class GTMAdmin
         if (strpos($current_screen->base, 'gtm-casino-card') === false) {
             return;
         } else {
-            wp_enqueue_style('boot_css', GTM_PLUGIN_URL . 'assets/css/admin-home.css');
+            wp_enqueue_style('boot_css', GTM_PLUGIN_URL . 'assets/css/admin-home.css', [], '1.0.0');
         }
     }
 

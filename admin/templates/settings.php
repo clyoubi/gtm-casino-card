@@ -1,5 +1,5 @@
 <div class="wrap">
-    <h1><?php _e('GTM Casino Card Settings', 'gtm-casino-card'); ?></h1>
+    <h1><?php esc_html_e('GTM Casino Card Settings', 'gtm-casino-card'); ?></h1>
     <form method="post" action="options.php">
         <?php
         // output security fields for the registered setting "myplugin_options"

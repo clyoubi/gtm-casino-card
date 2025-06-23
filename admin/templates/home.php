@@ -1,12 +1,17 @@
+
+<?php 
+    $general_bg_color = get_option("casino_general_logo_background", "#000");
+    $general_cta_bg_color = get_option("casino_general_cta_color", "#000");
+?>
 <div class="wrap">
-    <h1><?php _e('GTM Casino Card Plugin', 'gtm-casino-card'); ?></h1>
+    <h1><?php esc_html_e('GTM Casino Card Plugin', 'gtm-casino-card'); ?></h1>
     <p>
-        <?php _e("This plugin provides a custom shortcode that displays detailed information about a casino in a predefined, visually styled card format.
+        <?php esc_html_e("This plugin provides a custom shortcode that displays detailed information about a casino in a predefined, visually styled card format.
         Each casino card is dynamically rendered with a shortcode based on a unique identifier, making it easy for content editors to insert specific casino profiles anywhere across the site.
         The plugin is designed for flexibility, seamless integration, and ease of use within the WordPress block editor or classic editor.", 'gtm-casino-card') ?>
     </p>
 
-    <h2><?php _e('Usage', 'gtm-casino-card'); ?></h2>
+    <h2><?php esc_html_e('Usage', 'gtm-casino-card'); ?></h2>
     <table class="table">
         <thead>
             <tr>
@@ -30,13 +35,13 @@
             <tr>
                 <td><strong>header_color</strong></td>
                 <td>header_color defines the background color of the header where the logo is located. When defined, it overides the general color configuration set in the settings</td>
-                <td style="background-color:<?php echo get_option("casino_general_logo_background", "#000") ?>"></td>
+                <td style="background-color:<?php echo esc_html($general_bg_color); ?>"></td>
                 <td><code>[casino_card header_color="#000"]</code></td>
             </tr>
             <tr>
                 <td><strong>cta_color</strong></td>
                 <td>cta_color defines the background color of the CTA button "Play now". When defined, it overides the general color configuration set in the settings</td>
-                <td style="background-color:<?php echo get_option("casino_general_cta_color", "#287e29") ?>"></td>
+                <td style="background-color:<?php echo esc_html($general_cta_bg_color); ?>"></td>
                 <td><code>[casino_card cta_color="#000"]</code></td>
             </tr>
             <tr>

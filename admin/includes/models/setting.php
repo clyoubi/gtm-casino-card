@@ -45,7 +45,9 @@ if (!class_exists('GTM_Setting')) {
                     'show_in_rest' => false,
                 ]);
             } else {
-                register_setting($this->group, $this->id);
+                register_setting($this->group, $this->id, [
+                    'sanitize_callback' => [$this, 'sanitize_input'],
+                ]);
             }
 
             add_settings_field(
@@ -56,6 +58,28 @@ if (!class_exists('GTM_Setting')) {
                 $this->section
             );
         }
+
+        public function sanitize_input($input)
+        {
+            if ($this->type === 'email') {
+                return sanitize_email($input);
+            }
+
+            if ($this->type === 'url') {
+                return esc_url_raw($input);
+            }
+
+            if ($this->type === 'number') {
+                return intval($input);
+            }
+
+            if ($this->type === 'checkbox') {
+                return $input === 'yes' ? 'yes' : 'no';
+            }
+
+            return sanitize_text_field($input); // default fallback
+        }
+
 
         public function render_field()
         {

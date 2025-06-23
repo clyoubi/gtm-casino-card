@@ -34,7 +34,11 @@ if (!class_exists('Casino')) {
         public static function moneyFormat(float $amount)
         {
             $currency = get_option('casino_general_currency', 'EUR');
-            echo number_format($amount) . ' ' . self::mapCurrencyToCode($currency);
+            printf(
+                '%s %s',
+                esc_html(number_format($amount)),
+                esc_html(self::mapCurrencyToCode($currency))
+            );
         }
 
         public static function mapCurrencyToCode(string $currency): string

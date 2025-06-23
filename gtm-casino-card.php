@@ -3,7 +3,7 @@
 /**
  * Plugin Name: Casino Card GTM
  * Description: This plugin provides a custom shortcode that displays detailed information about a casino in a predefined, visually styled card format.
- * Version: 1.0
+ * Version: 1.1.0
  * Author: Cedric Liam Youbi
  * Author URI: https://github.com/clyoubi
  * Text Domain: gtm-casino-card
@@ -11,6 +11,8 @@
  * Requires at least: 6.1
  * Requires PHP: 8.2
  * Update URI: https://github.com/clyoubi/gtm-casino-card
+ * License: GPLv2
+ * Licence URI: https://www.gnu.org/licenses/gpl-2.0.html
  */
 
 
