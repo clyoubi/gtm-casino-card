@@ -13,8 +13,10 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-        with:
-          submodules: recursive
+
+      - name: Install Plugin Update Checker
+        run: |
+            git clone https://github.com/YahnisElsts/plugin-update-checker.git ./plugin-update-checker
 
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
