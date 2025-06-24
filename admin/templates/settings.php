@@ -27,3 +27,11 @@
     </div>
 
 </div>
+
+<?php
+
+add_action('update_option', function ($option_name, $old_value, $value) {
+    GTMCacheHandler::clear_casino_card_cache();
+    if (class_exists('GTMCacheHandler') && method_exists('GTMCacheHandler', 'clear_casino_card_cache')) {
+    }
+}, 10, 3);

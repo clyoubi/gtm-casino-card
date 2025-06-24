@@ -57,7 +57,6 @@ class GTMCacheHandler
         }
         delete_option(self::$CACHE_DATA_KEYS); // reset
 
-        // Optional: add admin notice
         add_action('admin_notices', function () {
             echo '<div class="notice notice-success is-dismissible"><p>Casino cache cleared successfully.</p></div>';
         });

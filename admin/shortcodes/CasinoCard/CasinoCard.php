@@ -55,20 +55,31 @@ class GTMCasinoCardShortCode
 
     public function render_cards_shortcode($atts)
     {
+        $data = $this->build_shortcode($atts);
+        if($data['status']) {
+            ob_start();
+            include GTM_PLUGIN_DIR . 'templates/CasinoCard.php';
+            return ob_get_clean();
+        }else{
+            _e($data['message'], "gtm-casino-card");
+        }
+    }
+
+    public function build_shortcode($atts)
+    {
         $atts = shortcode_atts([
-            'id'                     => '',
-            'header_color'           => get_option('casino_general_logo_background', '#000'),
-            'cta_color'              => get_option('casino_general_cta_color', "#287e29"),
-            'go'                     => '#',
-            'auto_dark_mode'         => get_option('casino_general_dark_mode', 'no'),
-            'display_brand_name'     => get_option('casino_general_logo_type', 'no'),
+            'id'                  => '',
+            'header_color'        => get_option('casino_general_logo_background', '#000'),
+            'cta_color'           => get_option('casino_general_cta_color', "#287e29"),
+            'go'                  => '#',
+            'auto_dark_mode'      => get_option('casino_general_dark_mode', 'no'),
+            'display_brand_name'  => get_option('casino_general_logo_type', 'no'),
         ], $atts, 'casino_card');
 
-
         $ID = $atts['id'];
-        $BG_COLOR =  $atts['header_color'];
-        $CTA_COLOR =  $atts['cta_color'];
-        $DARK_MODE =  $atts['auto_dark_mode'];
+        $BG_COLOR = $atts['header_color'];
+        $CTA_COLOR = $atts['cta_color'];
+        $DARK_MODE = $atts['auto_dark_mode'];
         $DISPLAY_BRAND_NAME = $atts['display_brand_name'];
         $go = $atts['go'];
 
@@ -76,18 +87,33 @@ class GTMCasinoCardShortCode
         $use_cache = get_option('casino_general_enable_cache') === 'yes';
         $cache_duration = (int) get_option('casino_cache_delay', 1) * HOUR_IN_SECONDS;
 
-        // Build request
-        $url = GTM_REST_API_ENDPOINT . "/casinos/$ID";
+        $casinos = [];
+
+        // Response structure
+        $result = [
+            'status'  => true,
+            'message' => '',
+            'extra'   => [
+                'BG_COLOR'            => $BG_COLOR,
+                'CTA_COLOR'           => $CTA_COLOR,
+                'DISPLAY_BRAND_NAME'  => $DISPLAY_BRAND_NAME,
+            ],
+            'data'    => [],
+        ];
+
         $username = GTMAdmin::getAPICredentials('username');
         $password = GTMAdmin::getAPICredentials('password');
 
         if (empty($username) || empty($password)) {
-            return 'API not configured.';
+            $result['message'] = 'API not configured.';
+            $result['status'] = false;
+            return $result;
         }
 
-
         if ($ID === '' && get_option("casino_general_fetch_all_casinos") !== 'yes') {
-            return 'Casino ID not set';
+            $result['message'] = 'Casino ID not set.';
+            $result['status'] = false;
+            return $result;
         }
 
         if ($DARK_MODE === 'yes') {
@@ -99,22 +125,24 @@ class GTMCasinoCardShortCode
             );
         }
 
-        // Try to load from cache if enabled
+        // Load from cache if possible
         if ($use_cache) {
             $cached = get_transient($cache_key);
             if ($cached !== false) {
-                $casinos = $cached;
-                foreach ($casinos as $item) {
+                foreach ($cached as $casino) {
                     if (filter_var($go, FILTER_VALIDATE_URL)) {
-                        $item->go = $go;
+                        $casino->go = $go;
                     }
                 }
-                ob_start();
-                include GTM_PLUGIN_DIR . 'templates/CasinoCard.php';
-                return ob_get_clean();
+                $result['status'] = true;
+                $result['message'] = 'Data loaded from cache.';
+                $result['data'] = $cached;
+                return $result;
             }
         }
 
+        // Make API request
+        $url = GTM_REST_API_ENDPOINT . "/casinos/$ID";
         $args = [
             'headers' => [
                 'Authorization' => 'Basic ' . base64_encode($username . ':' . $password),
@@ -122,44 +150,66 @@ class GTMCasinoCardShortCode
         ];
 
         $response = wp_remote_get($url, $args);
-        if (is_wp_error($response)) return 'Failed to load data.';
+        if (is_wp_error($response)) {
+            $result['message'] = 'Failed to fetch data.';
+            $result['status'] = false;
+            return $result;
+        }
 
         $code = wp_remote_retrieve_response_code($response);
-        if ($code !== 200) return 'Bad credentials.';
+        if ($code === 401) {
+            $result['message'] = 'Bad credentials.';
+            $result['status'] = false;
+            return $result;
+        }
+
+        if ($code === 422) {
+            $result['message'] = 'Wrong Casino ID.';
+            $result['status'] = false;
+            return $result;
+        }
+
+        if ($code !== 200) {
+            $result['message'] = 'Something went wrong. We cannot process the shortcode at the moment';
+            $result['status'] = false;
+            return $result;
+        }
 
         $body = wp_remote_retrieve_body($response);
-        $data = json_decode($body, true);
+        $raw_data = json_decode($body, true);
+        if (empty($raw_data)) {
+            $result['message'] = 'Invalid data received.';
+            $result['status'] = false;
+            return $result;
+        }
 
-        if (empty($data)) return 'Invalid data received.';
-
-        $casinos = [];
-
-        if (isset($data[0]) && is_array($data[0])) {
-            foreach ($data as $item) {
+        if (isset($raw_data[0]) && is_array($raw_data[0])) {
+            foreach ($raw_data as $item) {
                 $casino = new Casino($item);
                 if (filter_var($go, FILTER_VALIDATE_URL)) {
                     $casino->go = $go;
                 }
-                array_push($casinos, $casino);
+                $casinos[] = $casino;
             }
         } else {
-            $casino = new Casino($data);
+            $casino = new Casino($raw_data);
             if (filter_var($go, FILTER_VALIDATE_URL)) {
                 $casino->go = $go;
             }
-            array_push($casinos, $casino);
+            $casinos[] = $casino;
         }
 
-        // Save to cache if enabled
-        if ($use_cache) {
+        if ($use_cache && $result['status'] === true) {
             set_transient($cache_key, $casinos, $cache_duration);
             GTMCacheHandler::add_cache_key($cache_key);
         }
 
-        ob_start();
-        include GTM_PLUGIN_DIR . 'templates/CasinoCard.php';
-        return ob_get_clean();
+        $result['message'] = 'Data fetched successfully.';
+        $result['data'] = $casinos;
+
+        return $result;
     }
+
 
     public function register_settings()
     {
