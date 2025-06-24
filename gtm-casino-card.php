@@ -23,11 +23,11 @@ define('GTM_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('GTM_REST_API_ENDPOINT', "https://2025q2wpdev.cartable.info");
 define('GTM_SECRET_IV', 'FI/^zchTgou>@gI#');
 define('GTM_PLUGIN_BASENAME', plugin_basename(__FILE__));
-require_once GTM_PLUGIN_DIR . 'admin/includes/models/setting.php';
-require_once GTM_PLUGIN_DIR . 'admin/shortcodes/CasinoCard/CasinoCard.php';
+require_once GTM_PLUGIN_DIR . 'plugin-update-checker/plugin-update-checker.php';
 require_once GTM_PLUGIN_DIR . 'admin/admin.php';
 require_once GTM_PLUGIN_DIR . 'admin/CacheHandler.php';
-require_once GTM_PLUGIN_DIR . 'plugin-update-checker/plugin-update-checker.php';
+require_once GTM_PLUGIN_DIR . 'admin/shortcodes/shortcode.php';
+require_once GTM_PLUGIN_DIR . 'admin/shortcodes/CasinoCard/CasinoCard.php';
 
 use YahnisElsts\PluginUpdateChecker\v5\PucFactory;
 
@@ -37,7 +37,7 @@ class GTMCasinoCard
     {
         (new GTMAdmin())->init();
         (new GTMCacheHandler())->init();
-        (new GTMCasinoCardShortCode())->init();
+        (new GTMCasinoCardShortCode());
         $this->pluginUpdatesHandler();
     }
 
@@ -52,6 +52,5 @@ class GTMCasinoCard
         $myUpdateChecker->getVcsApi()->enableReleaseAssets();
     }
 }
-
 
 new GTMCasinoCard();

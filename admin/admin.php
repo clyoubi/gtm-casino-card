@@ -6,7 +6,6 @@ class GTMAdmin
     public static string $GTM_API_PASSWORD;
     public function init()
     {
-        add_action('admin_init', [$this, 'init']);
         add_action('admin_init', [$this, 'clear_casino_card_cache_request']);
         add_action('admin_init', [$this, 'test_connection']);
         add_action('admin_menu', [$this, 'casino_card_plugin_menu']);
@@ -15,6 +14,17 @@ class GTMAdmin
         register_activation_hook(__FILE__, [$this, 'generate_encryption_keys_if_needed']);
         register_deactivation_hook(__FILE__, [$this, 'plugin_deactivation_notify']);
     }
+
+    public static function autoload_subfolder_classes(): void
+    {
+        $dirs = glob(__DIR__ . '/shortcodes/*', GLOB_ONLYDIR);
+        foreach ($dirs as $dir) {
+            foreach (glob($dir . '/*.php') as $file) {
+                require_once $file;
+            }
+        }
+    }
+
 
     public static function getAPICredentials($value): string
     {

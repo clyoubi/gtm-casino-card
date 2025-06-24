@@ -6,9 +6,13 @@
  * @param CTA_COLOR: From Global settings or Shortcode entry to set CTA Button background color.
  * @param DARK_MODE: Defines if the card should use adaptative design to dark mode automatically based on user device configuration
  */
+    $BG_COLOR =  $data['extra']['BG_COLOR'];
+    $CTA_COLOR = $data['extra']['CTA_COLOR'];
+    $DARK_MODE =  $data['extra']['DARK_MODE'];
+    $DISPLAY_BRAND_NAME = $data['extra']['DISPLAY_BRAND_NAME'];
 ?>
 <div id="gtm-casino-cards-block">
-    <?php foreach ($casinos as $casino): ?>
+    <?php foreach ($data['data'] as $casino): ?>
         <div class="card" id="<?php echo esc_html($casino->id); ?>">
             <div class="logo" style="background-color:<?php echo esc_html($BG_COLOR); ?>">
                 <img height="100" loading="lazy" src="<?php echo esc_url($casino->logo_url); ?>" alt="<?php echo esc_html($casino->name); ?>">
