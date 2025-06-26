@@ -1,22 +1,27 @@
 <?php
-/**
- * @param casinos : Array of object Casino
- * @param DISPLAY_BRAND_NAME : form casino card setting to determine wether to display logo and title
- * @param BG_COLOR: From Global settings or Shortcode entry to set the header background color
- * @param CTA_COLOR: From Global settings or Shortcode entry to set CTA Button background color.
- * @param DARK_MODE: Defines if the card should use adaptative design to dark mode automatically based on user device configuration
- */
-    $BG_COLOR =  $data['extra']['BG_COLOR'];
-    $CTA_COLOR = $data['extra']['CTA_COLOR'];
-    $DARK_MODE =  $data['extra']['DARK_MODE'];
-    $DISPLAY_BRAND_NAME = $data['extra']['DISPLAY_BRAND_NAME'];
+/** @param $data = [
+        'status'  => true,
+        'message' => '',
+        'extra'   => [
+            'BG_COLOR'            => $BG_COLOR,
+            'CTA_COLOR'           => $CTA_COLOR,
+            'DISPLAY_BRAND_NAME'  => $DISPLAY_BRAND_NAME,
+        ],
+        'data'    => [],
+    ];
+* Extra array data
+* @param casinos : Array of object Casino
+* @param DISPLAY_BRAND_NAME : form casino card setting to determine wether to display logo and title
+* @param BG_COLOR: From Global settings or Shortcode entry to set the header background color
+* @param CTA_COLOR: From Global settings or Shortcode entry to set CTA Button background color.
+*/
 ?>
 <div id="gtm-casino-cards-block">
     <?php foreach ($data['data'] as $casino): ?>
         <div class="card" id="<?php echo esc_html($casino->id); ?>">
-            <div class="logo" style="background-color:<?php echo esc_html($BG_COLOR); ?>">
+            <div class="logo" style="background-color:<?php echo esc_html($data['extra']['BG_COLOR']); ?>">
                 <img height="100" loading="lazy" src="<?php echo esc_url($casino->logo_url); ?>" alt="<?php echo esc_html($casino->name); ?>">
-                <?php if ($DISPLAY_BRAND_NAME === 'yes') : ?>
+                <?php if ($data['extra']['DISPLAY_BRAND_NAME'] === 'yes') : ?>
                     <h3 class="brandName"><?php echo esc_html($casino->name); ?></h3>
                 <?php endif; ?>
             </div>
@@ -126,7 +131,7 @@
                     </div>
                 </div>
             </div>
-            <a class="cta" role="button" target="_blank" rel="nofollow" style="background-color:<?php echo esc_html($CTA_COLOR); ?>" href="<?php echo esc_url($casino->go); ?>">
+            <a class="cta" role="button" target="_blank" rel="nofollow" style="background-color:<?php echo esc_html($data['extra']['CTA_COLOR']); ?>" href="<?php echo esc_url($casino->go); ?>">
                 <?php esc_html_e("Play Now", "gtm-casino-card") ?>
             </a>
         </div>

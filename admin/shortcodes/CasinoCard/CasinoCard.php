@@ -29,39 +29,14 @@ class GTMCasinoCardShortCode extends GTM_ShortCode
 
     public function build_shortcode_2($atts)
     {
-        $atts = shortcode_atts([
-            'id'                     => '',
-            'header_color'           => get_option('casino_general_logo_background', '#000'),
-            'cta_color'              => get_option('casino_general_cta_color', "#287e29"),
-            'go'                     => '#',
-            'auto_dark_mode'         => get_option('casino_general_dark_mode', 'no'),
-            'display_brand_name'     => get_option('casino_general_logo_type', 'no'),
-        ], $atts, 'casino_card');
-
-        $data = [];
-
-        $BG_COLOR =  '#000';
-        $CTA_COLOR = '#000';
-        $DARK_MODE =  'no';
-        $DISPLAY_BRAND_NAME = 'no';
-
-        $data = [
-            'status' => true,
-            'message' => 'message',
-            'extra'     => [
-                'BG_COLOR' => $BG_COLOR,
-                'CTA_COLOR' => $CTA_COLOR,
-                'DARK_MODE' => $BG_COLOR,
-                'BG_COLOR' => $DISPLAY_BRAND_NAME,
-                'DISPLAY_BRAND_NAME' => $DISPLAY_BRAND_NAME
-            ],
-            'data' => array(
-                new Casino(
-                    $data
-                )
-            )
-        ];
-        return $data;
+        $data = $this->build_shortcode($atts);
+        if($data['status']) {
+            ob_start();
+            include GTM_PLUGIN_DIR . 'templates/CasinoCard.php';
+            return ob_get_clean();
+        }else{
+            _e($data['message'], "gtm-casino-card");
+        }
     }
 
     public function build_shortcode($atts)
@@ -90,12 +65,11 @@ class GTMCasinoCardShortCode extends GTM_ShortCode
 
         // Response structure
         $result = [
-            'status'  => false,
+            'status'  => true,
             'message' => '',
             'extra'   => [
                 'BG_COLOR'            => $BG_COLOR,
                 'CTA_COLOR'           => $CTA_COLOR,
-                'DARK_MODE'           => $DARK_MODE,
                 'DISPLAY_BRAND_NAME'  => $DISPLAY_BRAND_NAME,
             ],
             'data'    => [],
@@ -106,11 +80,13 @@ class GTMCasinoCardShortCode extends GTM_ShortCode
 
         if (empty($username) || empty($password)) {
             $result['message'] = 'API not configured.';
+            $result['status'] = false;
             return $result;
         }
 
         if ($ID === '' && get_option("casino_general_fetch_all_casinos") !== 'yes') {
             $result['message'] = 'Casino ID not set.';
+            $result['status'] = false;
             return $result;
         }
 
@@ -150,12 +126,26 @@ class GTMCasinoCardShortCode extends GTM_ShortCode
         $response = wp_remote_get($url, $args);
         if (is_wp_error($response)) {
             $result['message'] = 'Failed to fetch data.';
+            $result['status'] = false;
             return $result;
         }
 
         $code = wp_remote_retrieve_response_code($response);
-        if ($code !== 200) {
+        if ($code === 401) {
             $result['message'] = 'Bad credentials.';
+            $result['status'] = false;
+            return $result;
+        }
+
+        if ($code === 422) {
+            $result['message'] = 'Wrong Casino ID.';
+            $result['status'] = false;
+            return $result;
+        }
+
+        if ($code !== 200) {
+            $result['message'] = 'Something went wrong. We cannot process the shortcode at the moment';
+            $result['status'] = false;
             return $result;
         }
 
@@ -163,6 +153,7 @@ class GTMCasinoCardShortCode extends GTM_ShortCode
         $raw_data = json_decode($body, true);
         if (empty($raw_data)) {
             $result['message'] = 'Invalid data received.';
+            $result['status'] = false;
             return $result;
         }
 
@@ -182,12 +173,11 @@ class GTMCasinoCardShortCode extends GTM_ShortCode
             $casinos[] = $casino;
         }
 
-        if ($use_cache) {
+        if ($use_cache && $result['status'] === true) {
             set_transient($cache_key, $casinos, $cache_duration);
             GTMCacheHandler::add_cache_key($cache_key);
         }
 
-        $result['status'] = true;
         $result['message'] = 'Data fetched successfully.';
         $result['data'] = $casinos;
 
