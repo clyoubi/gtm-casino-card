@@ -1,4 +1,4 @@
-table {
+table#info {
   width: 100%;
   border-collapse: collapse;
   margin: 20px 0;
@@ -6,22 +6,22 @@ table {
   font-size: 14px;
 }
 
-th,
-td {
+table#info  th,
+table#info  td {
   padding: 12px 15px;
   border: 1px solid #ddd;
   text-align: left;
 }
 
-th {
+table#info  th {
   background-color: #f4f4f4;
   font-weight: bold;
 }
 
-tr:nth-child(even) {
+table#info  tr:nth-child(even) {
   background-color: #f9f9f9;
 }
 
-tr:hover {
+table#info  tr:hover {
   background-color: #f1f1f1;
 }

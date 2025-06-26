@@ -8,7 +8,7 @@ class GTMCasinoCardShortCode extends GTM_ShortCode
 
     public function define(): void
     {
-        $this->id = 'casino-card';
+        $this->id = 'casino_card';
         $this->name = 'Casino Card';
         $this->description = 'Display Casino Cards';
     }
@@ -16,7 +16,7 @@ class GTMCasinoCardShortCode extends GTM_ShortCode
     public function enqueue_casino_shortcode_css()
     {
         parent::enqueue_assets();
-        if (get_option("casino_general_dark_mode") === 'yes') {
+        if (GTM_Setting::getSetting('casino_card',"casino_general_dark_mode") === 'yes') {
             wp_enqueue_style(
                 'gtm-casino-card-style-dark',
                 GTM_PLUGIN_URL . 'assets/css/darkmode.css',
@@ -27,27 +27,15 @@ class GTMCasinoCardShortCode extends GTM_ShortCode
     }
 
 
-    public function build_shortcode_2($atts)
-    {
-        $data = $this->build_shortcode($atts);
-        if($data['status']) {
-            ob_start();
-            include GTM_PLUGIN_DIR . 'templates/CasinoCard.php';
-            return ob_get_clean();
-        }else{
-            _e($data['message'], "gtm-casino-card");
-        }
-    }
-
     public function build_shortcode($atts)
     {
         $atts = shortcode_atts([
             'id'                  => '',
-            'header_color'        => get_option('casino_general_logo_background', '#000'),
-            'cta_color'           => get_option('casino_general_cta_color', "#287e29"),
+            'header_color'        => GTM_Setting::getSetting('casino_card', 'casino_general_logo_background', '#000'),
+            'cta_color'           =>GTM_Setting::getSetting('casino_card','casino_general_cta_color', "#287e29"),
             'go'                  => '#',
-            'auto_dark_mode'      => get_option('casino_general_dark_mode', 'no'),
-            'display_brand_name'  => get_option('casino_general_logo_type', 'no'),
+            'auto_dark_mode'      => GTM_Setting::getSetting('casino_card','casino_general_dark_mode', 'no'),
+            'display_brand_name'  => GTM_Setting::getSetting('casino_card','casino_general_logo_type', 'no'),
         ], $atts, 'casino_card');
 
         $ID = $atts['id'];
@@ -58,8 +46,8 @@ class GTMCasinoCardShortCode extends GTM_ShortCode
         $go = $atts['go'];
 
         $cache_key = 'casino_card_cache_' . md5($ID);
-        $use_cache = get_option('casino_general_enable_cache') === 'yes';
-        $cache_duration = (int) get_option('casino_cache_delay', 1) * HOUR_IN_SECONDS;
+        $use_cache = GTM_Setting::getGlobalSettings('casino_general_enable_cache') === 'yes';
+        $cache_duration = (int) GTM_Setting::getGlobalSettings('casino_cache_delay', 1) * HOUR_IN_SECONDS;
 
         $casinos = [];
 
@@ -84,7 +72,7 @@ class GTMCasinoCardShortCode extends GTM_ShortCode
             return $result;
         }
 
-        if ($ID === '' && get_option("casino_general_fetch_all_casinos") !== 'yes') {
+        if ($ID === '' && GTM_Setting::getSetting('casino_card',"casino_general_fetch_all_casinos") !== 'yes') {
             $result['message'] = 'Casino ID not set.';
             $result['status'] = false;
             return $result;
@@ -180,6 +168,7 @@ class GTMCasinoCardShortCode extends GTM_ShortCode
 
         $result['message'] = 'Data fetched successfully.';
         $result['data'] = $casinos;
+        $result['status'] = true;
 
         return $result;
     }
@@ -187,46 +176,17 @@ class GTMCasinoCardShortCode extends GTM_ShortCode
 
     public function register_settings()
     {
-
-        add_settings_section(
-            'gtm_api_section',
-            __('API Settings', 'gtm-casino-card'),
-            fn() => print('<p>Configure your casino API credentials.</p>'),
-            'casino_card_settings'
-        );
-
-        (new GTM_Setting(
-            'casino_api_username',
-            __('API Username', 'gtm-casino-card'),
-            'casino_card_settings',
-            'gtm_api_section',
-            'text',
-            __('Your API username', 'gtm-casino-card'),
-            null
-        ))->create();
-
-        (new GTM_Setting(
-            'casino_api_password',
-            __('API Password', 'gtm-casino-card'),
-            'casino_card_settings',
-            'gtm_api_section',
-            'password',
-            __('Your API password', 'gtm-casino-card'),
-            null
-        ))->create();
-
-
         add_settings_section(
             'gtm_general_section',
             __('General Settings', 'gtm-casino-card'),
             fn() => print('<p>Configure your casino shortcode.</p>'),
-            'casino_card_settings'
+            $this->settings_slug
         );
 
         (new GTM_Setting(
             'casino_general_currency',
             __('Currency For Bonus', 'gtm-casino-card'),
-            'casino_card_settings',
+            $this->settings_slug,
             'gtm_general_section',
             'select',
             __('Currency to use to display the bonuses', 'gtm-casino-card'),
@@ -237,35 +197,16 @@ class GTMCasinoCardShortCode extends GTM_ShortCode
         (new GTM_Setting(
             'casino_general_logo_type',
             __('Caisno header logo', 'gtm-casino-card'),
-            'casino_card_settings',
+            $this->settings_slug,
             'gtm_general_section',
             'checkbox',
             __('Display the Brand name along side the logo of the logo only, this option can be overrinden within the shortcode itself', 'gtm-casino-card')
         ));
 
         (new GTM_Setting(
-            'casino_general_enable_cache',
-            __('Caisno Enable Cache', 'gtm-casino-card'),
-            'casino_card_settings',
-            'gtm_general_section',
-            'checkbox',
-            __('Enable cache to better load performance', 'gtm-casino-card'),
-        ))->create();
-
-        (new GTM_Setting(
-            'casino_cache_delay',
-            __('Caisno cache duration (hours)', 'gtm-casino-card'),
-            'casino_card_settings',
-            'gtm_general_section',
-            'number',
-            __('Number in hours to keep data locally, the new request will be perform every x hours', 'gtm-casino-card'),
-            1
-        ))->create();
-
-        (new GTM_Setting(
             'casino_general_fetch_all_casinos',
             __('Display all casinos', 'gtm-casino-card'),
-            'casino_card_settings',
+            $this->settings_slug,
             'gtm_general_section',
             'checkbox',
             __('Display all casinos if not id is set in the shortcode', 'gtm-casino-card')
@@ -275,13 +216,13 @@ class GTMCasinoCardShortCode extends GTM_ShortCode
             'gtm_shortcode_section',
             'Shortcode General Settings',
             fn() => print('<p>Configure your casino shortcode.</p>'),
-            'casino_card_settings'
+            $this->settings_slug
         );
 
         (new GTM_Setting(
             'casino_general_dark_mode',
             __('Casino Card Dark Mode', 'gtm-casino-card'),
-            'casino_card_settings',
+            $this->settings_slug,
             'gtm_shortcode_section',
             'checkbox',
             __('Enable Dark Mode so the Card matches the user browser UI mode configuration as a black card', 'gtm-casino-card')
@@ -290,7 +231,7 @@ class GTMCasinoCardShortCode extends GTM_ShortCode
         (new GTM_Setting(
             'casino_general_logo_type',
             __('Caisno header logo', 'gtm-casino-card'),
-            'casino_card_settings',
+            $this->settings_slug,
             'gtm_shortcode_section',
             'checkbox',
             __('Display the Brand name along side the logo of the logo only, this option can be overrinden within the shortcode itself', 'gtm-casino-card')
@@ -299,7 +240,7 @@ class GTMCasinoCardShortCode extends GTM_ShortCode
         (new GTM_Setting(
             'casino_general_logo_background',
             __('Caisno header background color', 'gtm-casino-card'),
-            'casino_card_settings',
+            $this->settings_slug,
             'gtm_shortcode_section',
             'color',
             __('Logo default background color', 'gtm-casino-card'),
@@ -309,7 +250,7 @@ class GTMCasinoCardShortCode extends GTM_ShortCode
         (new GTM_Setting(
             'casino_general_cta_color',
             __('Caisno CTA background color', 'gtm-casino-card'),
-            'casino_card_settings',
+            $this->settings_slug,
             'gtm_shortcode_section',
             'color',
             __('Call to action default background color', 'gtm-casino-card'),

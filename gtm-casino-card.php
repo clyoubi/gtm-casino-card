@@ -3,7 +3,7 @@
 /**
  * Plugin Name: Casino Card GTM
  * Description: This plugin provides a custom shortcode that displays detailed information about a casino in a predefined, visually styled card format.
- * Version: 1.1.7
+ * Version: 1.1.8
  * Author: Cedric Liam Youbi
  * Author URI: https://github.com/clyoubi
  * Text Domain: gtm-casino-card
@@ -27,14 +27,16 @@ require_once GTM_PLUGIN_DIR . 'plugin-update-checker/plugin-update-checker.php';
 require_once GTM_PLUGIN_DIR . 'admin/admin.php';
 require_once GTM_PLUGIN_DIR . 'admin/CacheHandler.php';
 require_once GTM_PLUGIN_DIR . 'admin/shortcodes/shortcode.php';
-require_once GTM_PLUGIN_DIR . 'admin/shortcodes/CasinoCard/CasinoCard.php';
 
 use YahnisElsts\PluginUpdateChecker\v5\PucFactory;
+
+
 
 class GTMCasinoCard
 {
     public function __construct()
     {
+        $this->autoload_subfolder_classes();
         (new GTMAdmin())->init();
         (new GTMCacheHandler())->init();
         (new GTMCasinoCardShortCode());
@@ -50,6 +52,33 @@ class GTMCasinoCard
         );
 
         $myUpdateChecker->getVcsApi()->enableReleaseAssets();
+    }
+    function autoload_subfolder_classes(): void
+    {
+
+            $directory = __DIR__ . "/admin/";
+            if (!is_dir($directory)) {
+                return; // Prevent errors if the directory doesn't exist
+            }
+            $iterator = new RecursiveIteratorIterator(
+                new RecursiveDirectoryIterator($directory, RecursiveDirectoryIterator::SKIP_DOTS)
+            );
+
+            foreach ($iterator as $file) {
+                $filePath = $file->getPathname();
+
+                // Explode the path and check if any directory is named 'templates'
+                $pathParts = explode(DIRECTORY_SEPARATOR, $file->getPath());
+
+                if (
+                    $file->isFile() &&
+                    $file->getExtension() === 'php' &&
+                    !in_array('templates', $pathParts, true)
+                ) {
+                    require_once $filePath;
+                }
+            }
+        
     }
 }
 
