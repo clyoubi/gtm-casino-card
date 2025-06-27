@@ -194,14 +194,6 @@ class GTMCasinoCardShortCode extends GTM_ShortCode
             Casino::$currencies
         ))->create();
 
-        (new GTM_Setting(
-            'casino_general_logo_type',
-            __('Caisno header logo', 'gtm-casino-card'),
-            $this->settings_slug,
-            'gtm_general_section',
-            'checkbox',
-            __('Display the Brand name along side the logo of the logo only, this option can be overrinden within the shortcode itself', 'gtm-casino-card')
-        ));
 
         (new GTM_Setting(
             'casino_general_fetch_all_casinos',

@@ -162,6 +162,32 @@ if (!class_exists('GTM_Setting')) {
         public static function getGlobalSettings(string $id, $default = null) {
             return get_option('casino_card_settings' . '_' . $id);
         }
+
+        public static function migrateExistingData($shortcode_id) {
+            $existingOption = [
+                'casino_api_username',
+                'casino_api_password',
+                'casino_general_enable_cache',
+                'casino_cache_delay',
+                'casino_general_currency',
+                'casino_general_fetch_all_casinos',
+                'casino_general_dark_mode',
+                'casino_general_logo_type',
+                'casino_general_logo_background',
+                'casino_general_cta_color',
+            ];
+
+            foreach ($existingOption as $option) {
+                $value = get_option($option);
+                if ($value) {
+                    $short = "gtm_$shortcode_id". "_shortcode_settings";
+                    update_option($short . '_' . $option, $value);
+                    delete_option($option);
+                }
+            }
+        }
     }
+
+
 
 }

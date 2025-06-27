@@ -41,6 +41,7 @@ class GTMCasinoCard
         (new GTMCacheHandler())->init();
         (new GTMCasinoCardShortCode());
         $this->pluginUpdatesHandler();
+        GTM_Setting::migrateExistingData('casino_card');
     }
 
     public function pluginUpdatesHandler()
