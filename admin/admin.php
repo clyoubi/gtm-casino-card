@@ -6,7 +6,6 @@ class GTMAdmin
     public static string $GTM_API_PASSWORD;
     public function init()
     {
-        add_action('admin_init', [$this, 'init']);
         add_action('admin_init', [$this, 'clear_casino_card_cache_request']);
         add_action('admin_init', [$this, 'test_connection']);
         add_action('admin_menu', [$this, 'casino_card_plugin_menu']);
@@ -20,10 +19,10 @@ class GTMAdmin
     {
         switch ($value) {
             case "username":
-                return sanitize_text_field(get_option('casino_api_username'));
+                return sanitize_text_field(GTM_Setting::getGlobalSettings('casino_api_username'));
                 break;
             case 'password':
-                return sanitize_text_field(GTMAdmin::gtm_decrypt(get_option('casino_api_password')));
+                return sanitize_text_field(GTMAdmin::gtm_decrypt(GTM_Setting::getGlobalSettings('casino_api_password')));
                 break;
         }
         return '';
@@ -96,7 +95,7 @@ class GTMAdmin
     {
         add_menu_page(
             __('Casino Card Shortcode Handler', 'gtm-casino-card'),
-            __('Casino Card', 'gtm-casino-card'),
+            __('Casino Shortcodes', 'gtm-casino-card'),
             'edit_posts',
             'gtm-casino-card',
             [$this, 'gtm_casino_card_page_html'],
@@ -110,7 +109,8 @@ class GTMAdmin
             __('Settings', 'gtm-casino-card'),
             'manage_options',
             'casino_card_settings',
-            [$this, 'gtm_casino_card_page_settings_page_html']
+            [$this, 'gtm_casino_card_page_settings_page_html'],
+            100
         );
     }
 
@@ -151,7 +151,7 @@ class GTMAdmin
     public function enqueue_admin_board_css()
     {
         $current_screen = get_current_screen();
-        if (strpos($current_screen->base, 'gtm-casino-card') === false) {
+        if (str_contains($current_screen->base, 'gtm') === false) {
             return;
         } else {
             wp_enqueue_style('boot_css', GTM_PLUGIN_URL . 'assets/css/admin-home.css', [], '1.0.0');

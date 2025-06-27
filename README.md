@@ -242,6 +242,110 @@ Minimal impact on CPU and memory due to use of native PHP functions and WordPres
 
 ---
 
+Here’s a polished and more comprehensive version of your Markdown documentation for shortcode registration in your WordPress plugin structure:
+
+### 💻 Shortcode Registration Guide
+This guide explains how to register a new shortcode in your custom WordPress plugin by following the established folder structure and class conventions.
+
+#### 📂 Folder Structure
+To register a new shortcode, create a subdirectory inside the shortcodes folder as follows:
+
+
+```PHP
+shortcodes/
+└── ShortcodeNameSlug/                  # e.g., CasinoBanner
+    ├── models/                         # Place related data models here (optional)
+    ├── public/                         # Assets for frontend
+    │   ├── css/
+    |   |────style.css                  # frontend style to enqueue automatically
+    │   ├── js/
+    |    |────js.js                     # Javascript to enqueue automatically
+    │   └── images/
+    ├── templates/
+    │   ├── admin.php                   # Admin page view for documentation or usage guide
+    │   └── ShortcodeNameSlug.php      # Frontend rendering view you can access to data with $data returned from you overriden function (build_shortcode)
+    └── ShortcodeNameSlug.php          # Class definition for the shortcode
+
+```
+#### 🧩 Class Definition
+Each shortcode must define a class with the following naming convention:
+
+```PHP
+class GTM{ShortcodeNameSlug}ShortCode extends GTM_ShortCode {
+    // Optional override methods from GTM_ShortCode
+}
+```
+Example
+
+```PHP
+class GTMCasinoBannerShortCode extends GTM_ShortCode {
+    public function build_shortcode(array $atts) {
+        // Shortcode logic
+    }
+
+    public function register_settings() {
+        // Optional admin settings
+    }
+
+    public function define() {
+        // Optional metadata definition (title, description, default atts)
+    }
+}
+```
+#### 🔌 Interface Requirements
+All shortcode classes must implement the IGTM_ShortCode interface:
+
+```PHP
+interface IGTM_ShortCode
+{
+    public function build_shortcode(array $atts);
+    public function register_settings();
+    public function define();
+}
+```
+
+#### ⚙️ Automatic Discovery
+Shortcodes placed in the correct folder and following the naming conventions are automatically discovered and registered by the plugin's base class (GTMCasinoCard or equivalent).
+
+#### 🛠 Rendering Views
+templates/ShortcodeNameSlug.php → Renders the frontend HTML for the shortcode.
+
+templates/admin.php → Provides a reference/admin page for documentation or instructions within the WP dashboard.
+
+#### 📝 Example Usage
+To add a new CasinoBanner shortcode:
+
+Create a folder: shortcodes/CasinoBanner
+
+Add your assets and templates.
+
+Create CasinoBanner.php in that folder with:
+
+```PHP
+class GTMCasinoBannerShortCode extends GTM_ShortCode {
+    public function build_shortcode(array $atts) {
+        // Define your shortcode logic here
+        return $data = [
+            status => true | false
+            extras => []  // extras data to parse to the view
+            data   => []  // array of object or object data to send to the view
+        ]
+    }
+
+    public function register_settings() {
+        // Optional: Register admin settings here
+    }
+
+    public function define() {
+        $this->name = 'Casino Banner';
+        $this->description = 'Displays a promotional casino banner.';
+        $this->id = 'casino_banner';
+    }
+}
+```
+
+---
+
 ## 🚀 Deployment Documentation
 
 This WordPress plugin uses GitHub Actions to automate the build and release process, including distribution to Telegram.

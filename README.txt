@@ -48,6 +48,13 @@ Yes! You can control colors, dark mode, and whether to show the brand name from 
 
 == Changelog ==
 
+= 1.1.8 =
+
+* Refactoring the code to enhance code modularity as component based plugin
+* Dedicate a submenu for each created shortcode embedding it's own general overview and own Settings
+* Create a golbal shared settings for all shortcodes
+
+
 = 1.1.7 =
 
 * Improved cache logic and shortcode response structure.
